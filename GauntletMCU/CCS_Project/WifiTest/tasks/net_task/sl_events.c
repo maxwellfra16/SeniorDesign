@@ -45,6 +45,11 @@
 /* Board Header file */
 #include "configs/Board.h"
 
+#include "tasks/FGtask.h"
+#include "tasks/net_task/net_task.h"
+
+#include "configs/wifi_config.h"
+
 
 /*!
     \brief          SimpleLinkNetAppEventHandler
@@ -68,6 +73,10 @@
 */
 void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent)
 {
+    Letter_t netwrk_msg;
+    netwrk_msg.sig = WIFI_CONNECT_EVENT;
+    netwrk_msg.payload.integer = WIFI_CONNECT_SUCCESS;
+
     if(pNetAppEvent == NULL)
         {
             return;
@@ -78,7 +87,7 @@ void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent)
             case SL_NETAPP_EVENT_IPV4_ACQUIRED:
             case SL_NETAPP_EVENT_IPV6_ACQUIRED:
 
-                //TODO signal other networking jobs to start here.
+                xQueueSendToBack(sl_event_box, &netwrk_msg, pdMS_TO_TICKS(0));
        }
 }
 /*!

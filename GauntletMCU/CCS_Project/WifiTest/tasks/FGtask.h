@@ -9,8 +9,11 @@
 #define CONFIGS_THREAD_H_
 
 
+#include <stdint.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 #include "configs/thread_config.h"
 
@@ -21,10 +24,13 @@ extern "C" {
 #endif
 
 
-// TODO Add Queue set functionality. Finish implementing multi threaded control mechanisms
-
-
-typedef uint8_t FGthread_ID;
+typedef struct _Letter {
+    uint8_t sig;
+    union {
+        int integer;
+        uint8_t char_array[LETTER_PAYLOAD_MAX_SIZE];
+    } payload;
+} Letter_t;
 
 
 /*!
@@ -32,10 +38,10 @@ typedef uint8_t FGthread_ID;
  *  started for now.
  *
  */
-typedef struct _FGthread_reg {
-    QueueHandle_t mailroom[QUEUE_COUNT];
+typedef struct _FGthread_arg {
+    QueueHandle_t mailroom[MAILBOX_CNT];
 
-};
+} FGthread_arg_t;
 
 /*!
  *  @brief      Globally visible mailbox for all FreeRTOS threads.
@@ -74,7 +80,7 @@ typedef struct _T_Params {
     35
     silently truncated.
      */
-    const char * const pcName;
+    char * pcName;
 
     /*
     Each task has its own unique stack that is allocated by the kernel to the task
@@ -152,7 +158,7 @@ typedef struct _T_Params {
     \note           This function should be used instead of xTaskCreate in the Finity Gauntlet project.
 
 */
-void FGcreate_task(T_Params);
+void FGcreate_task(T_Params par);
 
 
 #ifdef __cplusplus
