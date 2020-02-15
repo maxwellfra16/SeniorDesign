@@ -50,6 +50,12 @@ int main(void)
     /* Call driver init functions */
     Board_init();
 
+    // Initialize the thread communication data structures
+    for(int i = 0; i <= sizeof(thread_args.mailroom); i++) {
+        thread_args.mailroom[i] = xQueueCreate(MAILBOX_SIZE, sizeof(Letter_t));
+    }
+
+
     /* Start the FreeRTOS scheduler */
     vTaskStartScheduler();
 
