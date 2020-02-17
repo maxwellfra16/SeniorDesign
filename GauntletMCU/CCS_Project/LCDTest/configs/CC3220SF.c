@@ -36,7 +36,7 @@
  *  CC3220SF board.
  */
 
-#include <CC3220SF.h>
+#include <configs/CC3220SF.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -205,6 +205,78 @@ const PowerCC32XX_ConfigV1 PowerCC32XX_config = {
     .pinParkDefs = parkInfo,
     .numPins = sizeof(parkInfo) / sizeof(PowerCC32XX_ParkInfo)
 };
+
+
+
+/*
+ *  =============================== GPIO ===============================
+ */
+
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/gpio/GPIOCC32XX.h>
+
+/*
+ *  ======== gpioPinConfigs ========
+ *  Array of Pin configurations
+ */
+GPIO_PinConfig gpioPinConfigs[] =
+{
+     // RDX
+     GPIOCC32XX_GPIO_30 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     // WRX
+     GPIOCC32XX_GPIO_00 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     // D/CX
+     GPIOCC32XX_GPIO_03 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     // D7 - D0
+     GPIOCC32XX_GPIO_04 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_05 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_06 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_07 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_08 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_09 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_10 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+     GPIOCC32XX_GPIO_11 | GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+};
+
+/*
+ *  ======== gpioCallbackFunctions ========
+ *  Array of callback function pointers
+ *
+ *  NOTE: Unused callback entries can be omitted from the callbacks array to
+ *  reduce memory usage by enabling callback table optimization
+ *  (GPIO.optimizeCallbackTableSize = true)
+ */
+GPIO_CallbackFxn gpioCallbackFunctions[] =
+{
+     // RDX
+     NULL,
+     // WRX
+     NULL,
+     // D/CX
+     NULL,
+     // D7 - D0
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL
+};
+
+/*
+ *  ======== GPIOCC32XX_config ========
+ */
+const GPIOCC32XX_Config GPIOCC32XX_config = {
+    .pinConfigs = (GPIO_PinConfig *)gpioPinConfigs,
+    .callbacks = (GPIO_CallbackFxn *)gpioCallbackFunctions,
+    .numberOfPinConfigs = 11,
+    .numberOfCallbacks = 11,
+    .intPriority = (~0)
+};
+
+
 
 /*
  *  =============================== SPI ===============================

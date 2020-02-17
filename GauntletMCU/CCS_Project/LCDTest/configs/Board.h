@@ -37,6 +37,19 @@
 
 #include "CC3220SF.h"
 
+// GPIO defines
+#define LCD_RDX 0
+#define LCD_WRX 1
+#define LCD_DCX 2
+#define LCD_D0 3
+#define LCD_D1 4
+#define LCD_D2 5
+#define LCD_D3 6
+#define LCD_D4 7
+#define LCD_D5 8
+#define LCD_D6 9
+#define LCD_D7 10
+
 #ifdef __cplusplus
 extern "C" {
 #endif

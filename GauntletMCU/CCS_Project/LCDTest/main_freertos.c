@@ -38,7 +38,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "Board.h"
+#include "tasks/FGTask.h"
+
+#include "configs/Board.h"
+#include "configs/thread_config.h"
 
 
 /*
@@ -46,6 +49,8 @@
  */
 int main(void)
 {
+    FGthread_arg_t thread_args;
+    T_Params net_arg;
 
     /* Call driver init functions */
     Board_init();
