@@ -55,8 +55,44 @@ extern "C" {
 #define ILI9341_MADCTL_BGR 0x08
 #define ILI9341_MADCTL_MH 0x04
 
+// TODO figure out the proper values for these
+#define DCX_CMD 0
+#define DCX_DATA 1
+
+#define ONE_BYTE_CMD 0
+#define TWO_BYTE_CMD 1
+#define BULK_CMD 2 // TODO Make this equal to the number of bytes to be transferred later on
 
 
+typedef uint8_t tag_t;
+
+
+/*!
+ *  @brief      Template transaction with LCD
+ *
+ *  Note that small style transactions are MSB first and bulk transactions are LSB
+ *
+ */
+typedef struct _LCD_CMD {
+    /*  Determines the category of transaction.  */
+    tag_t tag;
+
+    /*  command code */
+    uint8_t cmd;
+
+    /* command parameters */
+    union _data {
+        /*
+            Pointer to large quantity of data used for very large transactions. tag = number of bytes to write.
+        */
+        uint8_t * bulk;
+
+        /*
+            Value type data for small transactions.
+        */
+        uint8_t small[4];
+    } data;
+} LCD_CMD_t;
 
 
 /*!
@@ -64,14 +100,46 @@ extern "C" {
 
     Callback for writing a single byte to the ILI9341
 
-    \param          void
+    \param          uint8_t    -   The byte to be written
+
+    \return         void
+
+    \note           The user needs to define a custom implementation of this for a particular MCU. The FG project has a
+                    implementation of this under lcd_task.c.
+
+*/
+inline void write8(uint8_t val);
+
+
+/*!
+    \brief          set_dcx
+
+    Callback for setting the dcx line high or low.
+
+    \param          uint8_t    -   0xFF for command and 0x0 for data.
+
+    \return         void
+
+    \note           The user needs to define a custom implementation of this for a particular MCU. The FG project has a
+                    implementation of this under lcd_task.c.
+
+*/
+inline void set_dcx(uint8_t val);
+
+
+/*!
+    \brief          write_cmd
+
+    More efficient routine for writing command - parameter sequences
+
+    \param          LCD_CMD_t   -   The bytes to be written in order of low index to high
 
     \return         void
 
     \note
 
 */
-void write8(uint8_t val);
+void ILI_write(LCD_CMD_t transaction);
 
 
 /*!
