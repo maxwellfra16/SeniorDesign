@@ -55,13 +55,13 @@ extern "C" {
 #define ILI9341_MADCTL_BGR 0x08
 #define ILI9341_MADCTL_MH 0x04
 
-#define DCX_CMD 0xFF
-#define DCX_DATA 0x0
+#define DCX_CMD 0x0
+#define DCX_DATA 0xFF
 
-#define ONE_BYTE_CMD 0
-#define TWO_BYTE_CMD 1
-#define BULK_CMD 2 // TODO Make this equal to the number of bytes to be transferred later on
-
+#define NO_CMD 0
+#define ONE_BYTE_CMD 1
+#define TWO_BYTE_CMD 2
+#define FOUR_BYTE_CMD 4
 
 typedef uint8_t tag_t;
 
@@ -94,6 +94,11 @@ typedef struct _LCD_CMD {
 } LCD_CMD_t;
 
 
+extern LCD_CMD_t pg_set;
+extern LCD_CMD_t cl_set;
+extern LCD_CMD_t mem_write;
+
+
 /*!
     \brief          write8
 
@@ -107,7 +112,9 @@ typedef struct _LCD_CMD {
                     implementation of this under lcd_task.c.
 
 */
-inline void write8(uint8_t val);
+void write8(uint8_t val);
+void FG_write_bulk(uint8_t * buf, uint16_t cnt);
+void FG_write_color(uint8_t * color, uint8_t color_len, int num);
 
 
 /*!

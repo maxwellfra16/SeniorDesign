@@ -14,6 +14,28 @@
 #include "ILI9341.h"
 
 
+LCD_CMD_t pg_set =
+{
+     .cmd = ILI9341_PAGEADDRSET,
+     .data.small = {0, 0, 0, 0},
+     .tag = 4
+};
+
+LCD_CMD_t cl_set =
+{
+     .cmd = ILI9341_COLADDRSET,
+     .data.small = {0, 0, 0, 0},
+     .tag = 4
+};
+
+LCD_CMD_t mem_write =
+{
+     .cmd = ILI9341_MEMORYWRITE,
+     .data.small = NULL,
+     .tag = NO_CMD
+};
+
+
 void ILI_write(LCD_CMD_t transaction)
 {
     set_dcx(DCX_CMD);
@@ -27,15 +49,19 @@ void ILI_write(LCD_CMD_t transaction)
     case ONE_BYTE_CMD:
         write8(transaction.data.small[0]);
         break;
-    default: // TODO make the default behavior an error handler
-
-        // If screen buffer sizes are 256 bytes and tag_t remains 8bits wide, than the loop condition check doubles as
-        // a bounds check.
-        for (tag_t i = 0; i < transaction.cmd; i++) {
-            write8(transaction.data.bulk[i]);
-        }
+    case FOUR_BYTE_CMD:
+        FG_write_bulk((uint8_t *) transaction.data.small, transaction.tag);
+        break;
+    case NO_CMD:
+        // ERROR HERE
+        break;
+    default:
+        // maybe add a bounds check here
+        FG_write_bulk(transaction.data.bulk, transaction.tag);
     }
 }
+
+uint8_t blah[] = {0x0F, 0x0F, 0x0, 0x0F, 0x0F, 0x0, 0x0F, 0x0F, 0x0, 0x0F, 0x0F, 0x0};
 
 
 void ili_init() {
@@ -97,11 +123,11 @@ void ili_init() {
     disp_on.data.small[0] = 0x0;
     disp_on.tag = ONE_BYTE_CMD;
 
+    mem_write.data.bulk = blah;
+    mem_write.tag = sizeof(blah);
+
     ILI_write(reset);
-#if 0
-#define
     vTaskDelay(pdMS_TO_TICKS(5));
-#endif
     ILI_write(disp_off);
     ILI_write(pow1);
     ILI_write(pow2);
@@ -111,52 +137,8 @@ void ili_init() {
     ILI_write(pixformat);
     ILI_write(frctrl);
     ILI_write(slp_out);
-#if 0
-#define
-    vTaskDelay(pdMS_TO_TICKS(150));
-#endif
     ILI_write(disp_on);
-#if 0
-#define
-    vTaskDelay(pdMS_TO_TICKS(500));
-#endif
-
-#if 0
-#define
-    write8(ILI9341_SOFTRESET)
-    //write8(0);
-    vTaskDelay(pdMS_TO_TICKS(5));
-    write8(ILI9341_DISPLAYOFF)
-    //write8(0);
-
-    write8(ILI9341_POWERCONTROL1);
-    write8(0x23);
-    write8(ILI9341_POWERCONTROL2);
-    write8(0x10);
-    write8(ILI9341_VCOMCONTROL1);
-    write8(0x2B);
-    write8(0x2B);
-    write8(ILI9341_VCOMCONTROL2);
-    write8(0xC0);
-    write8(ILI9341_MEMCONTROL);
-    write8(ILI9341_MADCTL_MY | ILI9341_MADCTL_BGR);
-    write8(ILI9341_PIXELFORMAT);
-    write8(0x55);
-    write8(ILI9341_FRAMECONTROL);
-    write8(0x00);
-    write8(0x1B);
-
-    //write8(ILI9341_ENTRYMODE, 0x07);
-
-    write8(ILI9341_SLEEPOUT);
-    //write8(0);
-    vTaskDelay(pdMS_TO_TICKS(150));
-    write8(ILI9341_DISPLAYON)
-    //write8(0);
     vTaskDelay(pdMS_TO_TICKS(500));
 
-    // TODO Addr window will need to be set
-    //setAddrWindow(0, 0, TFTWIDTH - 1
-
-#endif
+    ILI_write(mem_write);
 }

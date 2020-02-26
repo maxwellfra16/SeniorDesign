@@ -29,6 +29,7 @@
 
 #include "tasks/FGtask.h"
 #include "drivers/LCD/ILI9341.h"
+#include "drivers/LCD/lcd.h"
 
 #define SL_TASK_STACK_SIZE 2048 // copied from TI's tcpecho example
 #define SPAWN_TASK_PRIORITY 9 // also copied from TI's tcpecho example
