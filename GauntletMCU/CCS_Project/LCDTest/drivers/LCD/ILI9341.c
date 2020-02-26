@@ -98,7 +98,10 @@ void ili_init() {
     disp_on.tag = ONE_BYTE_CMD;
 
     ILI_write(reset);
+#if 0
+#define
     vTaskDelay(pdMS_TO_TICKS(5));
+#endif
     ILI_write(disp_off);
     ILI_write(pow1);
     ILI_write(pow2);
@@ -106,11 +109,17 @@ void ili_init() {
     ILI_write(vcom2);
     ILI_write(memctrl);
     ILI_write(pixformat);
+    ILI_write(frctrl);
     ILI_write(slp_out);
+#if 0
+#define
     vTaskDelay(pdMS_TO_TICKS(150));
+#endif
     ILI_write(disp_on);
+#if 0
+#define
     vTaskDelay(pdMS_TO_TICKS(500));
-
+#endif
 
 #if 0
 #define

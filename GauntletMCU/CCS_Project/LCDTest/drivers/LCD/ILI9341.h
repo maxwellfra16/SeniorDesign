@@ -55,9 +55,8 @@ extern "C" {
 #define ILI9341_MADCTL_BGR 0x08
 #define ILI9341_MADCTL_MH 0x04
 
-// TODO figure out the proper values for these
-#define DCX_CMD 0
-#define DCX_DATA 1
+#define DCX_CMD 0xFF
+#define DCX_DATA 0x0
 
 #define ONE_BYTE_CMD 0
 #define TWO_BYTE_CMD 1
@@ -151,7 +150,7 @@ void ILI_write(LCD_CMD_t transaction);
 
     \return         void
 
-    \note
+    \note           Requires GPIOs to be initialized.
 
 */
 void ili_init();
