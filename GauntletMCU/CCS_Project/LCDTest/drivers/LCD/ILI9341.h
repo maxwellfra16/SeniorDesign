@@ -134,7 +134,7 @@ inline void set_dcx(uint8_t val);
 
 
 /*!
-    \brief          write_cmd
+    \brief          ILI_write
 
     More efficient routine for writing command - parameter sequences
 

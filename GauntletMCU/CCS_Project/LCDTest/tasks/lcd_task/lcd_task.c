@@ -25,6 +25,10 @@ inline void set_dcx(uint8_t val) {
 }
 
 
+/*
+    Note: I took a look at the generated assembly for this, and it looks like the nominal execution time for the loop
+    here is 262.5ns.
+*/
 void FG_write_bulk(uint8_t * buf, uint16_t cnt) {
 
     for(int i = 0; i < cnt; i++) {

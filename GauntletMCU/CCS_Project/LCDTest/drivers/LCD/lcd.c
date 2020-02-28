@@ -9,6 +9,11 @@
 #include "lcd.h"
 
 
+void lcd_init() {
+    ili_init();
+}
+
+
 void lcd_clear() {
     uint8_t color[] = {0x0, 0x0};
 
