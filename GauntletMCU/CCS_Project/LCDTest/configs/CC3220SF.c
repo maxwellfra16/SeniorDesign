@@ -277,6 +277,69 @@ const GPIOCC32XX_Config GPIOCC32XX_config = {
 };
 
 
+/*
+ *  =============================== SDFatFS ===============================
+ */
+#include <ti/drivers/SD.h>
+#include <ti/drivers/SDFatFS.h>
+
+/*
+ * Note: The SDFatFS driver provides interface functions to enable FatFs
+ * but relies on the SD driver to communicate with SD cards.  Opening a
+ * SDFatFs driver instance will internally try to open a SD driver instance
+ * reusing the same index number (opening SDFatFs driver at index 0 will try to
+ * open SD driver at index 0).  This requires that all SDFatFs driver instances
+ * have an accompanying SD driver instance defined with the same index.  It is
+ * acceptable to have more SD driver instances than SDFatFs driver instances
+ * but the opposite is not supported & the SDFatFs will fail to open.
+ */
+SDFatFS_Object sdfatfsObjects[CC3220SF_LAUNCHXL_SDFatFSCOUNT];
+
+const SDFatFS_Config SDFatFS_config[CC3220SF_LAUNCHXL_SDFatFSCOUNT] = {
+    {
+        .object = &sdfatfsObjects[CC3220SF_LAUNCHXL_SDFatFS0]
+    }
+};
+
+const uint_least8_t SDFatFS_count = CC3220SF_LAUNCHXL_SDFatFSCOUNT;
+
+
+/*
+ *  =============================== SD ===============================
+ */
+#include <ti/drivers/SD.h>
+#include <ti/drivers/sd/SDHostCC32XX.h>
+
+#include <ti/devices/cc32xx/inc/hw_ints.h>
+#include <ti/devices/cc32xx/inc/hw_memmap.h>
+
+SDHostCC32XX_Object sdhostObjects[1];
+
+const SDHostCC32XX_HWAttrsV1 sdhostHWattrs[1] = {
+    /* CONFIG_SD_0 */
+    {
+        .clkRate = 8000000,
+        .intPriority = (~0),
+        .baseAddr = SDHOST_BASE,
+        .rxChIdx = UDMA_CH23_SDHOST_RX,
+        .txChIdx = UDMA_CH24_SDHOST_TX,
+        .dataPin = SDHostCC32XX_PIN_06_SDCARD_DATA,
+        .cmdPin = SDHostCC32XX_PIN_08_SDCARD_CMD,
+        .clkPin  = SDHostCC32XX_PIN_07_SDCARD_CLK
+    },
+};
+
+const SD_Config SD_config[1] = {
+    /* CONFIG_SD_0 */
+    {
+        .fxnTablePtr = &sdHostCC32XX_fxnTable,
+        .object = &sdhostObjects[CONFIG_SD_0],
+        .hwAttrs = &sdhostHWattrs[CONFIG_SD_0]
+    },
+};
+
+const uint_least8_t SD_count = 1;
+
 
 /*
  *  =============================== SPI ===============================
@@ -308,25 +371,6 @@ const SPICC32XXDMA_HWAttrsV1 spiCC3220SDMAHWAttrs[CC3220SF_LAUNCHXL_SPICOUNT] = 
         .misoPin = SPICC32XXDMA_PIN_NO_CONFIG,
         .clkPin = SPICC32XXDMA_PIN_NO_CONFIG,
         .csPin = SPICC32XXDMA_PIN_NO_CONFIG
-    },
-    {
-        .baseAddr = GSPI_BASE,
-        .intNum = INT_GSPI,
-        .intPriority = (~0),
-        .spiPRCM = PRCM_GSPI,
-        .csControl = SPI_HW_CTRL_CS,
-        .csPolarity = SPI_CS_ACTIVELOW,
-        .pinMode = SPI_4PIN_MODE,
-        .turboMode = SPI_TURBO_OFF,
-        .scratchBufPtr = &spiCC3220SDMAscratchBuf[CC3220SF_LAUNCHXL_SPI1],
-        .defaultTxBufValue = 0,
-        .rxChannelIndex = UDMA_CH6_GSPI_RX,
-        .txChannelIndex = UDMA_CH7_GSPI_TX,
-        .minDmaTransferSize = 10,
-        .mosiPin = SPICC32XXDMA_PIN_07_MOSI,
-        .misoPin = SPICC32XXDMA_PIN_06_MISO,
-        .clkPin = SPICC32XXDMA_PIN_05_CLK,
-        .csPin = SPICC32XXDMA_PIN_08_CS
     }
 };
 
@@ -335,11 +379,6 @@ const SPI_Config SPI_config[CC3220SF_LAUNCHXL_SPICOUNT] = {
         .fxnTablePtr = &SPICC32XXDMA_fxnTable,
         .object = &spiCC3220SDMAObjects[CC3220SF_LAUNCHXL_SPI0],
         .hwAttrs = &spiCC3220SDMAHWAttrs[CC3220SF_LAUNCHXL_SPI0]
-    },
-    {
-        .fxnTablePtr = &SPICC32XXDMA_fxnTable,
-        .object = &spiCC3220SDMAObjects[CC3220SF_LAUNCHXL_SPI1],
-        .hwAttrs = &spiCC3220SDMAHWAttrs[CC3220SF_LAUNCHXL_SPI1]
     }
 };
 

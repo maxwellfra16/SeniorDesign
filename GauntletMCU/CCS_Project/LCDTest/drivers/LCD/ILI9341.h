@@ -94,11 +94,6 @@ typedef struct _LCD_CMD {
 } LCD_CMD_t;
 
 
-extern LCD_CMD_t pg_set;
-extern LCD_CMD_t cl_set;
-extern LCD_CMD_t mem_write;
-
-
 /*!
     \brief          write8
 

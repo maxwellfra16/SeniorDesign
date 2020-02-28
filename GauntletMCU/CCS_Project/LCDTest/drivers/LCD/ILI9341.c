@@ -14,28 +14,6 @@
 #include "ILI9341.h"
 
 
-LCD_CMD_t pg_set =
-{
-     .cmd = ILI9341_PAGEADDRSET,
-     .data.small = {0, 0, 0, 0},
-     .tag = 4
-};
-
-LCD_CMD_t cl_set =
-{
-     .cmd = ILI9341_COLADDRSET,
-     .data.small = {0, 0, 0, 0},
-     .tag = 4
-};
-
-LCD_CMD_t mem_write =
-{
-     .cmd = ILI9341_MEMORYWRITE,
-     .data.small = NULL,
-     .tag = NO_CMD
-};
-
-
 void ILI_write(LCD_CMD_t transaction)
 {
     set_dcx(DCX_CMD);
